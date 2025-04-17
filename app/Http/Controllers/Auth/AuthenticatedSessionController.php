@@ -24,11 +24,28 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->validate([
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
 
-        $request->session()->regenerate();
+        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            $user = Auth::user();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+            // Redirect berdasarkan role
+            if ($user->role === 'admin') {
+                return redirect()->route('dashboard.index');
+            } elseif ($user->role === 'employee') {
+                return redirect()->route('petugas.index');
+            }
+
+            // Default jika role tidak dikenali
+            return redirect()->route('/');
+        }
+
+        return back()->withErrors([
+            'email' => trans('auth.failed'),
+        ]);
     }
 
     /**
@@ -42,6 +59,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

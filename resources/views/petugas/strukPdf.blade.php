@@ -21,10 +21,13 @@
 <body>
     <h4>SkyStore</h4>
     <p>
-        Member Status: Member<br>
-        No. HP: 081234567890<br>
-        Bergabung Sejak: 12 Januari 2023<br>
-        Poin Member: 50
+        Member Status: {{ $penjualan->status_member ? 'Member' : 'Non Member' }}<br>
+        No. HP: {{ $penjualan->pelanggan->nomor_hp ?? '-' }}<br>
+        Bergabung Sejak:
+        {{ $penjualan->pelanggan
+            ? \Carbon\Carbon::parse($penjualan->pelanggan->created_at)->format('d F Y')
+            : '-' }}<br>
+                Poin Member: {{ $penjualan->pelanggan->point ?? 0 }}
     </p>
 
     <table border="1" cellpadding="5" cellspacing="0">
@@ -37,18 +40,14 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Nama Produk A</td>
-                <td class="right">2</td>
-                <td class="right">Rp. 10.000</td>
-                <td class="right">Rp. 20.000</td>
-            </tr>
-            <tr>
-                <td>Nama Produk B</td>
-                <td class="right">1</td>
-                <td class="right">Rp. 15.000</td>
-                <td class="right">Rp. 15.000</td>
-            </tr>
+            @foreach ($penjualan->penjualanDetails as $detail)
+                <tr>
+                    <td>{{ $detail->product->nama ?? 'Produk' }}</td>
+                    <td class="right">{{ $detail->jumlah }}</td>
+                    <td class="right">Rp. {{ number_format($detail->harga, 0, ',', '.') }}</td>
+                    <td class="right">Rp. {{ number_format($detail->sub_total, 0, ',', '.') }}</td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 
@@ -56,24 +55,26 @@
     <table width="100%">
         <tr>
             <td>Total Harga</td>
-            <td class="right"><strong>Rp. 35.000</strong></td>
+            <td class="right"><strong>Rp. {{ number_format($penjualan->total_harga, 0, ',', '.') }}</strong></td>
         </tr>
-        <tr>
-            <td>Poin Digunakan</td>
-            <td class="right">50</td>
-        </tr>
+        @if ($penjualan->pelanggan && $penjualan->pelanggan->point > 0)
+            <tr>
+                <td>Poin Digunakan</td>
+                <td class="right">{{ $penjualan->pelanggan->point }}</td>
+            </tr>
+        @endif
         <tr>
             <td>Harga Setelah Poin</td>
-            <td class="right"><strong>Rp. 34.500</strong></td>
+            <td class="right"><strong>Rp. {{ number_format($penjualan->total_bayar, 0, ',', '.') }}</strong></td>
         </tr>
         <tr>
             <td>Total Kembalian</td>
-            <td class="right"><strong>Rp. 500</strong></td>
+            <td class="right"><strong>Rp. {{ number_format($penjualan->kembalian, 0, ',', '.') }}</strong></td>
         </tr>
     </table>
 
     <br>
-    <small>16 April 2025 | Admin</small>
+    <small>{{ $penjualan->tanggal }} | {{ $penjualan->user->name ?? 'Petugas' }}</small>
     <p><strong>Terima kasih atas pembelian Anda!</strong></p>
 </body>
 </html>

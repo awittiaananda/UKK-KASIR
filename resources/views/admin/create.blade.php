@@ -173,6 +173,7 @@
                           <div class="card-body">
                             <h4 class="card-title">Tambah Produk</h4>
                             <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data" class="forms-sample">
+                                @csrf
                               <div class="row mb-4">
                                 <!-- Nama Produk -->
                                 <div class="col-md-6">

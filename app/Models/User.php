@@ -24,6 +24,12 @@ class User extends Authenticatable
         'role',
     ];
 
+//     public function penjualans()
+// {
+//     return $this->hasMany(Penjualan::class);
+// }
+
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -46,4 +52,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function hasRole($role)
+{
+    return $this->role === $role;
+}
+
 }

@@ -158,86 +158,86 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title">Penjualan</h4>
-                                <form action="{{ route('penjualan.pelanggan') }}" method="POST">
-                                    @csrf
-                                    <div class="row">
-                                        @foreach ($products as $index => $product)
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm text-center rounded-4 border">
-            <div class="card-body">
-                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="mb-3 object-fit-cover" style="width: 100px; height: 100px; object-fit: cover;">
-                <h5 class="fw-bold">{{ $product->name }}</h5>
-                <p class="text-muted">Stok {{ $product->stock }}</p>
-                <p><strong>Rp. {{ number_format($product->price, 0, ',', '.') }}</strong></p>
+                                <div class="card p-3">
+                                    {{-- @dd($penjualan) --}}
 
-                {{-- Input untuk produk dan jumlah --}}
-                <input type="hidden" name="produk[{{ $index }}][id]" value="{{ $product->id }}">
-                <div class="d-flex justify-content-center align-items-center mb-2 product-card" data-index="{{ $index }}" data-price="{{ $product->price }}" data-stock="{{ $product->stock }}">
-                    <button type="button" class="btn btn-outline-secondary btn-sm qty-minus">−</button>
+                                    {{-- Tombol Unduh & Kembali --}}
+                                    <div class="mb-3 d-flex justify-content-between">
+                                        <a href="#" class="btn btn-primary">Unduh</a>
+                                        <a href="#" class="btn btn-secondary">Kembali</a>
+                                    </div>
 
-                    <input type="text" name="produk[{{ $index }}][jumlah]" class="form-control mx-2 quantity-input text-center" style="width: 60px;" value="0" min="0" readonly>
+                                    {{-- Info Member (Jika Ada) --}}
+                                    @isset($penjualan)  {{-- Memastikan penjualan ada --}}
+    @if ($penjualan->pelanggan)
+        <div class="mb-3">
+            <strong>Status Member : {{ $penjualan->pelanggan->status == 'member' ? 'Member' : 'Non-Member' }}
+            </strong><br>
 
-                    <button type="button" class="btn btn-outline-secondary btn-sm qty-plus">+</button>
-                </div>
-
-                <p>Sub Total <strong class="subtotal">Rp. 0</strong></p>
-            </div>
+            <strong>{{ $penjualan->pelanggan->nomor_hp }}</strong><br>
+            MEMBER SEJAK : {{ \Carbon\Carbon::parse($penjualan->pelanggan->created_at)->translatedFormat('d F Y') }}<br>
+            MEMBER POIN : {{ number_format($penjualan->pelanggan->poin ?? 0) }}
         </div>
-    </div>
-@endforeach
+    @else
+        <div class="mb-3">
+            <strong>NON-MEMBER</strong>
+        </div>
+    @endif
 
+                                    {{-- Info Invoice --}}
+                                    <div class="mb-3 text-end">
+                                        <strong>Invoice - #{{ $penjualan->id }}</strong><br>
+                                        {{ \Carbon\Carbon::parse($penjualan->created_at)->translatedFormat('d F Y') }}
                                     </div>
 
-                                    {{-- Tombol Selanjutnya --}}
-                                    <div class="text-center mt-3">
-                                        <button type="submit" class="btn btn-primary px-5">Selanjutnya</button>
+                                    {{-- Tabel Produk --}}
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Produk</th>
+                                                <th>Harga</th>
+                                                <th>Quantity</th>
+                                                <th>Sub Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($penjualan->penjualanDetails as $detail)
+                                                <tr>
+                                                    <td>
+                                                        {{ $detail->product ? $detail->product->name : 'Produk Tidak Ditemukan' }}
+                                                    </td>
+                                                    {{-- <td>{{ $detail->product->nama_produk }}</td> --}}
+                                                    <td>Rp. {{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                                    <td>{{ $detail->jumlah }}</td>
+                                                    <td>Rp. {{ number_format($detail->harga * $detail->jumlah, 0, ',', '.') }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
+                                    {{-- Ringkasan --}}
+                                    <div class="row mt-4">
+                                        <div class="col">
+                                            <p><strong>POIN DIGUNAKAN</strong><br>{{ $penjualan->poin_digunakan ?? 0 }}</p>
+                                        </div>
+                                        <div class="col">
+                                            <p><strong>KASIR</strong><br>{{ $penjualan->user->nama ?? 'Petugas' }}</p>
+                                        </div>
+                                        <div class="col">
+                                            <p><strong>KEMBALIAN</strong><br>Rp. {{ number_format($penjualan->kembalian ?? 0, 0, ',', '.') }}</p>
+                                        </div>
+                                        <div class="col text-end bg-dark text-white p-3 rounded">
+                                            <p><strong>TOTAL</strong><br>Rp. {{ number_format(session('total_harga'), 0, ',', '.') }}</p>
+                                        </div>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
+                        @endisset
                     </div> <!-- .col -->
                 </div> <!-- .row -->
             </div> <!-- .content-wrapper -->
         </div> <!-- .main-panel -->
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const cards = document.querySelectorAll('.product-card');
-
-                cards.forEach(card => {
-                    const btnMinus = card.querySelector('.qty-minus');
-                    const btnPlus = card.querySelector('.qty-plus');
-                    const qtyInput = card.querySelector('.quantity-input');
-                    const subtotalEl = card.parentElement.querySelector('.subtotal');
-
-                    const price = parseInt(card.dataset.price);
-                    const stock = parseInt(card.dataset.stock);
-
-                    // Ambil nilai awal dari input
-                    let quantity = parseInt(qtyInput.value);
-
-                    btnPlus.addEventListener('click', () => {
-                        if (stock < 0 || stock === 999999 || quantity < stock) {
-                            quantity++;
-                            updateUI();
-                        }
-                    });
-
-                    btnMinus.addEventListener('click', () => {
-                        if (quantity > 0) {
-                            quantity--;
-                            updateUI();
-                        }
-                    });
-
-                    function updateUI() {
-                        qtyInput.value = quantity;
-                        subtotalEl.textContent = 'Rp. ' + (quantity * price).toLocaleString('id-ID');
-                    }
-                });
-            });
-        </script>
-
-
         <!-- container-scroller -->
         <!-- plugins:js -->
         <script src="{{ 'assets/vendors/js/vendor.bundle.base.js' }}"></script>

@@ -4,7 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Kasir</title>
+<title>User</title>
 
 <!-- plugins:css -->
 <link rel="stylesheet" href="{{ asset('assets/vendors/feather/feather.css') }}">
@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
 
 <!-- Plugin css for this page -->
-<link rel="stylesheet" href="{{ asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
+<!-- <link rel="stylesheet" href="{{ asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}"> -->
 <link rel="stylesheet" href="{{ asset('assets/vendors/datatables.net-bs5/dataTables.bootstrap5.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/vendors/ti-icons/css/themify-icons.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/js/select.dataTables.min.css') }}">
@@ -150,7 +150,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+      <a class="nav-link" href="{{ route('user.index') }}">
         <i class="mdi mdi-account menu-icon"></i>
         <span class="menu-title">User</span>
       </a>
@@ -163,41 +163,47 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Edit Produk</h4>
-                            <form action="{{ route('product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+                            <h4 class="card-title">Edit User</h4>
+                            <form action="{{ route('user.update', $user->id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
 
-                                <div class="mb-3">
-            <label for="name" class="form-label">Nama Produk</label>
-            <input type="text" class="form-control" name="name" value="{{ $product->name }}" required>
-        </div>
+                                <div class="row">
+                                    <!-- Email -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control w-100" name="email" value="{{ $user->email }}" required>
+                                    </div>
 
-        <div class="mb-3">
-            <label for="price" class="form-label">Harga</label>
-            <input type="text" class="form-control" name="price" value="{{ $product->price }}" required>
-        </div>
+                                    <!-- Nama -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="name" class="form-label">Nama <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control w-100" name="name" value="{{ $user->name }}" required>
+                                    </div>
+                                </div>
 
-        <div class="mb-3">
-            <label for="stock" class="form-label">Stok</label>
-            <input type="number" class="form-control" name="stock" value="{{ $product->stock }}" readonly>
-        </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
+                                        <select name="role" class="form-control w-100" required>
+                                            <option value="Admin" {{ strtolower($user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                            <option value="Employee" {{ strtolower($user->role) == 'employee' ? 'selected' : '' }}>Employee</option>
+                                        </select>
+                                    </div>
 
-        <div class="mb-3">
-            <label for="image" class="form-label">Gambar Produk</label>
-            <input type="file" class="form-control" name="image">
-            @if ($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" alt="Produk" width="100">
-            @endif
-        </div>
+                                    <!-- Password -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="password" class="form-label">Password</label>
+                                        <input type="password" class="form-control w-100" name="password">
+                                    </div>
+                                </div>
 
-
-                                <button type="submit" class="btn btn-primary">Update</button>
+                                <!-- Tombol Simpan -->
+                                <button type="submit" class="btn btn-primary">Simpan</button>
                             </form>
                         </div>
                     </div>
                 </div>
-
               <div class="col-md-12 grid-margin">
                 <div class="row">
                 </div>

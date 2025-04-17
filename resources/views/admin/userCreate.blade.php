@@ -1,12 +1,13 @@
+hh
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Kasir</title>
-
-<!-- plugins:css -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Kasir</title>
+    <!-- plugins:css -->
+   <!-- plugins:css -->
 <link rel="stylesheet" href="{{ asset('assets/vendors/feather/feather.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/vendors/ti-icons/css/themify-icons.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
@@ -14,7 +15,7 @@
 <link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
 
 <!-- Plugin css for this page -->
-<link rel="stylesheet" href="{{ asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
+<!-- <link rel="stylesheet" href="{{ asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}"> -->
 <link rel="stylesheet" href="{{ asset('assets/vendors/datatables.net-bs5/dataTables.bootstrap5.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/vendors/ti-icons/css/themify-icons.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/js/select.dataTables.min.css') }}">
@@ -163,36 +164,52 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Edit Produk</h4>
-                            <form action="{{ route('product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+                            <h4 class="card-title">Tambah User</h4>
+                            <form action="{{ route('user.store') }}" method="POST">
                                 @csrf
-                                @method('PUT')
+                                <div class="row">
+                                    <!-- Email -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                            <input type="email" class="form-control" id="email" name="email" required value="{{ old('email') }}">
+                                        </div>
+                                    </div>
 
-                                <div class="mb-3">
-            <label for="name" class="form-label">Nama Produk</label>
-            <input type="text" class="form-control" name="name" value="{{ $product->name }}" required>
-        </div>
+                                    <!-- Nama -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Nama <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="name" name="name" required>
+                                        </div>
+                                    </div>
 
-        <div class="mb-3">
-            <label for="price" class="form-label">Harga</label>
-            <input type="text" class="form-control" name="price" value="{{ $product->price }}" required>
-        </div>
+                                    <!-- Role -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="role" name="role" required>
+                                                <option value="admin">Admin</option>
+                                                <option value="employee">Employee</option>
+                                            </select>
+                                        </div>
+                                    </div>
 
-        <div class="mb-3">
-            <label for="stock" class="form-label">Stok</label>
-            <input type="number" class="form-control" name="stock" value="{{ $product->stock }}" readonly>
-        </div>
+                                    <!-- Password -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control" id="password" name="password" required>
+                                                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-        <div class="mb-3">
-            <label for="image" class="form-label">Gambar Produk</label>
-            <input type="file" class="form-control" name="image">
-            @if ($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" alt="Produk" width="100">
-            @endif
-        </div>
-
-
-                                <button type="submit" class="btn btn-primary">Update</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
                             </form>
                         </div>
                     </div>
@@ -212,28 +229,44 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
-<!-- endinject -->
+    <!-- endinject -->
 
-<!-- Plugin js for this page -->
-<script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
-<script src="{{ asset('assets/vendors/datatables.net/jquery.dataTables.js') }}"></script>
-<!-- <script src="{{ asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js') }}"></script> -->
-<script src="{{ asset('assets/vendors/datatables.net-bs5/dataTables.bootstrap5.js') }}"></script>
-<script src="{{ asset('assets/js/dataTables.select.min.js') }}"></script>
-<!-- End plugin js for this page -->
+    <!-- Plugin js for this page -->
+    <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
+    <script src="{{ asset('assets/vendors/datatables.net/jquery.dataTables.js') }}"></script>
+    <!-- <script src="{{ asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js') }}"></script> -->
+    <script src="{{ asset('assets/vendors/datatables.net-bs5/dataTables.bootstrap5.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.select.min.js') }}"></script>
+    <!-- End plugin js for this page -->
 
-<!-- inject:js -->
-<script src="{{ asset('assets/js/off-canvas.js') }}"></script>
-<script src="{{ asset('assets/js/template.js') }}"></script>
-<script src="{{ asset('assets/js/settings.js') }}"></script>
-<script src="{{ asset('assets/js/todolist.js') }}"></script>
-<!-- endinject -->
+    <!-- inject:js -->
+    <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('assets/js/template.js') }}"></script>
+    <script src="{{ asset('assets/js/settings.js') }}"></script>
+    <script src="{{ asset('assets/js/todolist.js') }}"></script>
+    <!-- endinject -->
 
-<!-- Custom js for this page -->
-<script src="{{ asset('assets/js/jquery.cookie.js') }}" type="text/javascript"></script>
-<script src="{{ asset('assets/js/dashboard.js') }}"></script>
+    <!-- Custom js for this page -->
+    <script src="{{ asset('assets/js/jquery.cookie.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('assets/js/dashboard.js') }}"></script>
 
     <!-- <script src="assets/js/Chart.roundedBarCharts.js"></script> -->
     <!-- End custom js for this page-->
+    <script>
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            var passwordField = document.getElementById("password");
+            var icon = this.querySelector("i");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        });
+    </script>
   </body>
 </html>
